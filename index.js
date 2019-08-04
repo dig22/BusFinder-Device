@@ -9,6 +9,7 @@ const port = new SerialPort("/dev/ttyAMA0", { baudRate: 9600 });
 //const gps = new GPS();
 
 //const parser = port.pipe(new SerialPortParser());
+var Threads = require('webworker-threads');
 
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
