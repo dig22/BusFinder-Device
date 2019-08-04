@@ -73,9 +73,7 @@ const watchHCSR04 = () => {
                 sensor2TriggeredState = true;
 
                 if (sensor1TriggeredState) {
-                    if (passenger_count > 0) {
-                        passenger_count--;
-                    }
+                    passenger_count--;
                     resetTriggers();
                 }
             }
