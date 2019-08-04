@@ -23,7 +23,7 @@ const echo2 = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 trigger1.digitalWrite(0);
 trigger2.digitalWrite(0);
 
-BUS_FINDER_API_ADDRESS = "https://bus-finder-api.herokuapp.com/api"; 
+BUS_FINDER_API_ADDRESS = "https://bus-finder-api.herokuapp.com/api";
 DEVICE_ID = "fbadcb56-9ca0-48f3-b6c7-3b85df598b8a";
 
 var passenger_count = 0;
@@ -73,7 +73,7 @@ const watchHCSR04 = () => {
                 sensor2TriggeredState = true;
 
                 if (sensor1TriggeredState) {
-                    if(passenger_count > 0 ){
+                    if (passenger_count > 0) {
                         passenger_count--;
                     }
                     resetTriggers();
@@ -143,38 +143,44 @@ gps.on("data", async data => {
     }
 });*/
 
-const sendData = () => {
+var worker = new Threads.Worker(function () {
 
-    
-    request.get( BUS_FINDER_API_ADDRESS + '/owner/private/device/data?data_id=1', function (error, response, body) {
+    const sendData = () => {
 
-        if(error){
-            return;
-        }
 
-        console.log(body);
+        request.get(BUS_FINDER_API_ADDRESS + '/owner/private/device/data?data_id=1', function (error, response, body) {
 
-        data = JSON.parse(body);
+            if (error) {
+                return;
+            }
 
-        request.put(
-            {
-                url: BUS_FINDER_API_ADDRESS +  '/AdminUI/private/bus/setlocation/device',
-                form:
+            console.log(body);
+
+            data = JSON.parse(body);
+
+            request.put(
                 {
-                    device_id: DEVICE_ID,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                    crowd: passenger_count,
-                    speed: data.speed
-                }
-            }, function (err, httpResponse, body) {
-                console.log(body);
-            })
+                    url: BUS_FINDER_API_ADDRESS + '/AdminUI/private/bus/setlocation/device',
+                    form:
+                    {
+                        device_id: DEVICE_ID,
+                        latitude: data.latitude,
+                        longitude: data.longitude,
+                        crowd: passenger_count,
+                        speed: data.speed
+                    }
+                }, function (err, httpResponse, body) {
+                    console.log(body);
+                })
 
-    })
+        })
 
-}
+    }
 
-setInterval(() => {
-    sendData();
-}, 4000);
+    setInterval(() => {
+        sendData();
+    }, 4000);
+
+
+});
+
