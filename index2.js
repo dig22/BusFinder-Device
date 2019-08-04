@@ -43,3 +43,8 @@ var worker = new Threads.Worker(function () {
 
 });
 
+
+process.on('uncaughtException', function(err) {
+    console.log('Caught exception: ' + err);
+});
+
