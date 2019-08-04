@@ -44,7 +44,7 @@ const watchHCSR04 = () => {
         } else {
             const endTick = tick;
             const diff = (endTick >> 0) - (startTick1 >> 0); // Unsigned 32 bit arithmetic
-            // console.log(diff / 2 / MICROSECDONDS_PER_CM);
+            console.log(diff / 2 / MICROSECDONDS_PER_CM);
             sensor1DistanceMesureent = diff / 2 / MICROSECDONDS_PER_CM
 
             if (sensor1DistanceMesureent < 30) {
@@ -66,7 +66,7 @@ const watchHCSR04 = () => {
         } else {
             const endTick = tick;
             const diff = (endTick >> 0) - (startTick2 >> 0); // Unsigned 32 bit arithmetic
-            // console.log("\t" + diff / 2 / MICROSECDONDS_PER_CM);
+            console.log("\t" + diff / 2 / MICROSECDONDS_PER_CM);
             sensor2DistanceMesureent = diff / 2 / MICROSECDONDS_PER_CM
 
             if (sensor2DistanceMesureent < 30) {
