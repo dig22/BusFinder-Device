@@ -9,7 +9,7 @@ const port = new SerialPort("/dev/ttyAMA0", { baudRate: 9600 });
 //const gps = new GPS();
 
 //const parser = port.pipe(new SerialPortParser());
-var Threads = require('webworker-threads');
+//var Threads = require('webworker-threads');
 
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
@@ -66,7 +66,7 @@ const watchHCSR04 = () => {
         } else {
             const endTick = tick;
             const diff = (endTick >> 0) - (startTick2 >> 0); // Unsigned 32 bit arithmetic
-           // console.log("\t" + diff / 2 / MICROSECDONDS_PER_CM);
+            // console.log("\t" + diff / 2 / MICROSECDONDS_PER_CM);
             sensor2DistanceMesureent = diff / 2 / MICROSECDONDS_PER_CM
 
             if (sensor2DistanceMesureent < 30) {
@@ -143,44 +143,39 @@ gps.on("data", async data => {
     }
 });*/
 
-var worker = new Threads.Worker(function () {
-
-    const sendData = () => {
+const sendData = () => {
 
 
-        request.get(BUS_FINDER_API_ADDRESS + '/owner/private/device/data?data_id=1', function (error, response, body) {
+    request.get(BUS_FINDER_API_ADDRESS + '/owner/private/device/data?data_id=1', function (error, response, body) {
 
-            if (error) {
-                return;
-            }
+        if (error) {
+            return;
+        }
 
-            console.log(body);
+        console.log(body);
 
-            data = JSON.parse(body);
+        data = JSON.parse(body);
 
-            request.put(
+        request.put(
+            {
+                url: BUS_FINDER_API_ADDRESS + '/AdminUI/private/bus/setlocation/device',
+                form:
                 {
-                    url: BUS_FINDER_API_ADDRESS + '/AdminUI/private/bus/setlocation/device',
-                    form:
-                    {
-                        device_id: DEVICE_ID,
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        crowd: passenger_count,
-                        speed: data.speed
-                    }
-                }, function (err, httpResponse, body) {
-                    console.log(body);
-                })
+                    device_id: DEVICE_ID,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                    crowd: passenger_count,
+                    speed: data.speed
+                }
+            }, function (err, httpResponse, body) {
+                console.log(body);
+            })
 
-        })
+    })
 
-    }
+}
 
-    setInterval(() => {
-        sendData();
-    }, 4000);
-
-
-});
+setInterval(() => {
+    sendData();
+}, 10000);
 
